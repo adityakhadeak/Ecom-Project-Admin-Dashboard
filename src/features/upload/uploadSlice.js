@@ -11,20 +11,24 @@ export const uploadImg = createAsyncThunk(
       }
       return await uploadService.uploadImg(formData);
     } catch (error) {
-      return thunkAPI.rejectWithValue(error);
+      // Error handling improvement
+      return thunkAPI.rejectWithValue(error.response?.data || error.message);
     }
   }
 );
+
 export const delImg = createAsyncThunk(
   "delete/images",
   async (id, thunkAPI) => {
     try {
       return await uploadService.deleteImg(id);
     } catch (error) {
-      return thunkAPI.rejectWithValue(error);
+      // Error handling improvement
+      return thunkAPI.rejectWithValue(error.response?.data || error.message);
     }
   }
 );
+
 const initialState = {
   images: [],
   isError: false,
@@ -32,10 +36,18 @@ const initialState = {
   isSuccess: false,
   message: "",
 };
+
 export const uploadSlice = createSlice({
-  name: "imaegs",
+  name: "images",
   initialState,
-  reducers: {},
+  reducers: {
+    resetState: (state) => {
+      state.images = [];
+      state.isError = false;
+      state.isSuccess = false;
+      state.message = "";
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(uploadImg.pending, (state) => {
@@ -51,7 +63,7 @@ export const uploadSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.message = action.error;
+        state.message = action.payload; // Improve error messaging
       })
       .addCase(delImg.pending, (state) => {
         state.isLoading = true;
@@ -60,7 +72,7 @@ export const uploadSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        state.images = [];
+        state.images = state.images.filter((img) => img.public_id !== action.meta.arg);
       })
       .addCase(delImg.rejected, (state, action) => {
         state.isLoading = false;
@@ -70,4 +82,7 @@ export const uploadSlice = createSlice({
       });
   },
 });
+
+export const { resetState } = uploadSlice.actions;
+
 export default uploadSlice.reducer;
