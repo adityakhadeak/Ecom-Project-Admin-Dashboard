@@ -113,7 +113,7 @@ const Dashboard = () => {
       });
     }
     setOrderData(data1);
-  }, [monthlyDataState, yearlyDataState]);
+  }, [monthlyDataState, yearlyDataState,orderState]);
 
   const config = {
     data: dataMonthly,
