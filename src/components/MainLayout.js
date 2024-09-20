@@ -26,6 +26,10 @@ const MainLayout = () => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+
+  const getTokenFromLocalStorage = localStorage.getItem("user")
+  ? JSON.parse(localStorage.getItem("user"))
+  : null;
   const navigate = useNavigate();
   return (
     <Layout /* onContextMenu={(e) => e.preventDefault()} */>
@@ -199,8 +203,8 @@ const MainLayout = () => {
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                <h5 className="mb-0">Dev</h5>
-                <p className="mb-0">devjariwala8444@gmail.com</p>
+            <h5 className="mb-0">{getTokenFromLocalStorage?.firstname}</h5>
+                <p className="mb-0">{getTokenFromLocalStorage?.email}</p>
               </div>
               <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
                 <li>
